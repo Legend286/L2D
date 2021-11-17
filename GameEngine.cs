@@ -1,70 +1,114 @@
 ﻿using System.ComponentModel;
-using OpenTK.Windowing.Common;
-using OpenTK.Windowing.Desktop;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
+using OpenTK.Graphics;
+using System;
+using ImGuiNET;
+
 
 namespace L2D
 {
-    class GameEngine
+    public class GameEngine : GameWindow
     {
-        public GameWindow window;
-        GameWindowSettings gameWindowSettings;
-        NativeWindowSettings nativeWindowSettings;
+        ImGuiController _imguicontroller;
+        static int SPRITES_X = 25;
+        static int SPRITES_Y = 25;
+        Sprite[,] sprites = new Sprite[SPRITES_X, SPRITES_Y];
+        Camera camera;
 
-        public GameEngine(int width, int height, float fps, float timestep)
+        public GameEngine(int width, int height) : base(width, height, GraphicsMode.Default)
         {
-            InitialiseGameWindow(width, height, fps, timestep);
-
-            window.Load += WindowLoad;
-            window.RenderFrame += RenderFrame;
-            window.UpdateFrame += UpdateFrame;
-            window.Closing += WindowClose;
-            window.Resize += WindowResize;
+            Width = width;
+            Height = height;
         }
 
-        private void WindowResize(ResizeEventArgs e)
+        protected override void OnResize(EventArgs e)
         {
-            GL.Viewport(0, 0, e.Width, e.Height);
+            base.OnResize(e);
+            GL.Viewport(0, 0, (int)Width, (int)Height);
+            _imguicontroller.WindowResized(Width, Height);
+            camera.OrthographicHeight = Height;
+            camera.OrthographicWidth = Width;
         }
 
-        private void InitialiseGameWindow(int width, int height, float fps, float timestep)
+        protected override void OnClosed(EventArgs e)
         {
-            gameWindowSettings = new GameWindowSettings();
-            gameWindowSettings.UpdateFrequency = timestep;
-            gameWindowSettings.RenderFrequency = fps;
-            gameWindowSettings.IsMultiThreaded = true;
-            nativeWindowSettings = new NativeWindowSettings();
-            nativeWindowSettings.Size = new Vector2i(width, height);
-            nativeWindowSettings.Title = "L2D Engine";
-
-            this.window = new GameWindow(gameWindowSettings, nativeWindowSettings);
+            base.OnClosed(e);
         }
 
-        private void WindowClose(CancelEventArgs e)
+        protected override void OnUpdateFrame(FrameEventArgs e)
         {
-        }
+            base.OnUpdateFrame(e);
 
-        public void Run()
-        {
-            window.Run();
+            ShaderManager.UpdateCurrentShader();
         }
-
-        private void UpdateFrame(FrameEventArgs e)
+        float timer = 0;
+        protected override void OnRenderFrame(FrameEventArgs e)
         {
-        }
+            base.OnRenderFrame(e);
+            // update imgui controller for rendering
+            _imguicontroller.Update(this, (float)e.Time);
 
-        private void RenderFrame(FrameEventArgs e)
-        {
+            // Clear colour and depth :)
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            // Render everything between here
+            ImGui.Begin("test");
+            ImGui.Text("Hello Aidan welcome to my little shit psyduck sprite test :)");
+            ImGui.End();
+            timer += (float)e.Time;
+
+            for (int i = 0; i < SPRITES_X; i++)
+                for (int j = 0; j < SPRITES_Y; j++)
+                {
+                    {
+                        float size = (MathF.Abs(MathF.Sin(timer + (float)(i * j)) * 32f) + 32f);
+                        sprites[i, j].SetRotation(45f);
+
+                        sprites[i, j].SizeX = size;
+                        sprites[i, j].SizeY = size;
+                        sprites[i, j].Rotation = MathF.Sin( timer + (float)(i * j) ) * 45.0f + 180.0f;
+                        sprites[i, j].RenderStandard();
+                    }
+                }
+
+            // and here
+            
+            // Render ui last
+            _imguicontroller.Render();
+
+            // flush and swap
             GL.Flush();
-            window.SwapBuffers();
-            window.Title = "L2D Engine - " + (1.0f / e.Time).ToString("0.") + " fps.";
+            this.SwapBuffers();
+
+
+            // set title
+            this.Title = "L2D Engine - " + (1.0f / e.Time).ToString("0.") + " fps.";
         }
 
-        private void WindowLoad()
+        protected override void OnLoad(EventArgs e)
         {
+            base.OnLoad(e);
+            _imguicontroller = new ImGuiController(Width, Height);
+            _imguicontroller.CreateSkin();
             GL.ClearColor(Color4.CornflowerBlue);
+            GL.Disable(EnableCap.CullFace);
+            for (int i = 0; i < SPRITES_X; i++)
+                for (int j = 0; j < SPRITES_Y; j++)
+                {
+                    {
+                        sprites[i, j] = new Sprite(128f, 128f, new Vector2((i - SPRITES_X/2) * 32f, (j - SPRITES_Y/2) * 32f), 0, 0, "test.png");
+                    }
+                }
+            camera = new Camera(Width, Height, 0.0f, 1000.0f);
+            camera.Position = new Vector3(0, 0, 0);
+        }
+
+        protected override void OnKeyPress(KeyPressEventArgs e)
+        {
+            base.OnKeyPress(e);
+
+            _imguicontroller.PressChar(e.KeyChar);
         }
     }
 }

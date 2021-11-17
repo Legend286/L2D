@@ -42,9 +42,7 @@ namespace L2D
             
             Texture2D newTexture = new Texture2D(filename);
 
-            int id = newTexture.GetTextureID();
-
-            GL.BindTexture(TextureTarget.Texture2D, id);
+            newTexture.BindTexture();
 
             // load bitmap
             Bitmap bmp = new Bitmap("Content/" + filename);
@@ -77,6 +75,12 @@ namespace L2D
                 TextureTarget.Texture2D,
                 TextureParameterName.TextureMinFilter,
                 (int)TextureMinFilter.Nearest
+                );
+
+            GL.TexParameter(
+                TextureTarget.Texture2D,
+                TextureParameterName.TextureMagFilter,
+                (int)TextureMagFilter.Nearest
                 );
 
             return newTexture;

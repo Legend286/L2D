@@ -1,16 +1,17 @@
-﻿namespace L2D.Application
+﻿namespace L2D
 {
-    class Application
+    public static class Application
     {
-        
+        public static int initialWidth = 1280, initialHeight = 720;
+        public static float fps = 1.0f / 144.0f;
+        public static float timestep = 1.0f / 60.0f;
+        public static GameEngine Engine;
         static void Main(string[] args)
         {
-            int width = 1280, height = 720;
-            float fps = 1.0f / 60f;
-            float timestep = 1.0f / 60.0f;
 
-            GameEngine engine = new GameEngine(width, height, fps, timestep);
-            engine.Run();
+
+            Engine = new GameEngine(initialWidth, initialHeight);
+            Engine.Run(fps, timestep);
         }
     }
 }
