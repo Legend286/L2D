@@ -9,7 +9,7 @@ namespace L2D
     public static class SpriteRenderer
     {
         private static List<Sprite> Sprites = new List<Sprite>();
-
+        public static Quad Q = new Quad();
         public static void AddSprite(Sprite spr)
         {
             Sprites.Add(spr);
@@ -18,6 +18,11 @@ namespace L2D
         public static void RemoveSprite(Sprite spr)
         {
             Sprites.Remove(spr);
+        }
+
+        public static int GetCount()
+        {
+            return Sprites.Count;
         }
 
         public static void Render()

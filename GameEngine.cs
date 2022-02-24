@@ -53,9 +53,11 @@ namespace L2D
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             // Render everything between here
+            int count = SpriteRenderer.GetCount();
             ImGui.Begin("test");
             ImGui.Text("Hello Aidan welcome to my little shit psyduck sprite test :)");
             ImGui.SliderFloat("Spacing", ref scaleup, 0.5f, 100.0f);
+            ImGui.Text("Number of Sprites: " + count);
             ImGui.End();
             timer += (float)e.Time;
 
@@ -69,10 +71,10 @@ namespace L2D
                         sprites[i, j].Scale = size;
                         sprites[i, j].Rotation = MathF.Sin( timer + (float)(i * j) ) * 45.0f + 180.0f;
                         sprites[i, j].Position = new Vector2((i - SPRITES_X / 2) * 32.0f * scaleup, (j - SPRITES_Y / 2) * 32.0f * scaleup);
-
-                        sprites[i, j].RenderStandard();
                     }
                 }
+
+            SpriteRenderer.Render();
 
             // and here
             

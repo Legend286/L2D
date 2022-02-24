@@ -1,5 +1,4 @@
-﻿
-#define SHADER_STATE_FIX
+﻿#define SHADER_STATE_FIX
 
 using System;
 using System.Collections.Generic;

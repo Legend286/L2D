@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿#define QUAD_FIX
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 
@@ -11,7 +12,12 @@ namespace L2D
         private int layer = 0;
         public int Layer { get { return layer; } set { layer = value; UpdateTransform(); } }
 
+#if QUAD_FIX
+
+        Quad Q = SpriteRenderer.Q;
+#else
         Quad Q = new Quad();
+#endif
         private Matrix4 modelMatrix;
 
 
@@ -34,7 +40,7 @@ namespace L2D
             Position = pos;
             Rotation = rot;
             UpdateTransform();
-          
+            SpriteRenderer.AddSprite(this);
             spriteShader = ShaderManager.get(ShaderManager.ShaderTypeL2D.Sprite, ShaderManager.ShaderFlags.NULL);
             ShaderManager.SetCurrentShader(spriteShader);
         }

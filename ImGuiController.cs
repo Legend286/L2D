@@ -199,6 +199,8 @@ namespace L2D
             if (_frameBegun)
             {
                 _frameBegun = false;
+                RenderState.BindVAO(-1);
+                RenderState.BindVBO(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer,-1);
                 ImGui.Render();
                 RenderImDrawData(ImGui.GetDrawData());
             }

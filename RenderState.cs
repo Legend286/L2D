@@ -21,7 +21,7 @@ namespace L2D
             }
         }
 
-        static bool BindVBO(BufferTarget target, int id)
+        public static bool BindVBO(BufferTarget target, int id)
         {
             if (id == CurrentVertexBuffer)
             {
