@@ -1,4 +1,6 @@
 ﻿#define QUAD_FIX
+//#define USE_INSTANCING
+
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
@@ -13,12 +15,11 @@ namespace L2D
         public int Layer { get { return layer; } set { layer = value; UpdateTransform(); } }
 
 #if QUAD_FIX
-
         Quad Q = SpriteRenderer.Q;
 #else
         Quad Q = new Quad();
 #endif
-        private Matrix4 modelMatrix;
+        public Matrix4 modelMatrix;
 
 
          
@@ -29,6 +30,9 @@ namespace L2D
             Matrix4 trans = Matrix4.CreateTranslation(Position.X, Position.Y, Layer);
 
             modelMatrix = sz * rot * trans;
+#if USE_INSTANCING
+            modelMatrix.Transpose();
+#endif
         }
 
         public Sprite(Vector2 pos, float rot, float sz, int layer, string texturePath) : base(pos, rot, sz)
@@ -41,7 +45,11 @@ namespace L2D
             Rotation = rot;
             UpdateTransform();
             SpriteRenderer.AddSprite(this);
+#if USE_INSTANCING
+            spriteShader = ShaderManager.get(ShaderManager.ShaderTypeL2D.Sprite, ShaderManager.ShaderFlags.INSTANCED);
+#else
             spriteShader = ShaderManager.get(ShaderManager.ShaderTypeL2D.Sprite, ShaderManager.ShaderFlags.NULL);
+#endif
             ShaderManager.SetCurrentShader(spriteShader);
         }
 
@@ -57,8 +65,24 @@ namespace L2D
             GL.ActiveTexture(TextureUnit.Texture0);
             Texture.BindTexture();
             ShaderManager.GetCurrentShader().BindInt("texture0", 0);
+
             GL.Enable(EnableCap.AlphaTest);
             Q.Draw();
+        }
+
+        public void SetupDrawingInstanced()
+        {
+            ShaderManager.SetCurrentShader(spriteShader);
+            ShaderManager.UseShader();
+            ShaderManager.BindModelMatrix(modelMatrix);
+            GL.ActiveTexture(TextureUnit.Texture0);
+            Texture.BindTexture();
+            ShaderManager.GetCurrentShader().BindInt("texture0", 0);
+        }
+
+        public void RenderInstanced()
+        {
+            ShaderManager.SetCurrentShader(spriteShader);
         }
 
         public void Dispose()

@@ -20,7 +20,7 @@ namespace L2D
 
     class Shader
     {
-        public readonly string Name;
+        public string Name;
         public int Program { get; private set; }
         private readonly Dictionary<string, int> UniformToLocation = new Dictionary<string, int>();
         private bool Initialized = false;
@@ -32,12 +32,13 @@ namespace L2D
             String define = ""; //String injection
             foreach (ShaderFlags i in Enum.GetValues(typeof(ShaderFlags)))
             {
-                if (flags.HasFlag(i))
+                if (i.HasFlag(flags))
                 {
                     define += "#define " + Enum.GetName(typeof(ShaderFlags), i) + "\n";
                 }
 
             }
+            Debug.WriteLine("SHADER DEFINES FOR SHADER '" + Name + "' are: "+ define);
             return define;
         }
 
@@ -84,7 +85,11 @@ namespace L2D
         {
             string VertexShaderSource = "#version 330 core\n";
             string FragmentShaderSource = "#version 330 core\n";
+            Name = type.ToString();
+
             string injectionCode = inject(flags);
+
+
 
             FragmentShaderSource += injectionCode;
             VertexShaderSource += injectionCode;
@@ -116,6 +121,7 @@ namespace L2D
         public void UseShader()
         {
             GL.UseProgram(Program);
+            ShaderManager.SetCurrentShader(this);
         }
 
         public void Dispose()

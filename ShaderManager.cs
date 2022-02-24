@@ -28,7 +28,7 @@ namespace L2D
         {
             NULL = -1,
             SPRITE = 2,
-            INSTANCING = 4,
+            INSTANCED = 4,
             LIGHT_SPOT = 8,
             LIGHT_POINT = 16,
         };

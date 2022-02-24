@@ -1,8 +1,5 @@
-﻿using System;
+﻿//#define USE_INSTANCING
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace L2D
 {
@@ -29,8 +26,18 @@ namespace L2D
         {
             foreach(Sprite spr in Sprites)
             {
+#if USE_INSTANCING
+                spr.SetupDrawingInstanced();
+                DrawInstanced();
+#else
                 spr.RenderStandard();
+#endif
             }
+        }
+
+        public static void DrawInstanced()
+        {
+            Q.DrawInstanced(Sprites);
         }
     }
 }

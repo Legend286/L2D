@@ -11,8 +11,8 @@ namespace L2D
     public class GameEngine : GameWindow
     {
         ImGuiController _imguicontroller;
-        static int SPRITES_X = 150;
-        static int SPRITES_Y = 150;
+        static int SPRITES_X = 100;
+        static int SPRITES_Y = 100;
         Sprite[,] sprites = new Sprite[SPRITES_X, SPRITES_Y];
         Camera camera;
 
@@ -87,7 +87,7 @@ namespace L2D
 
 
             // set title
-            this.Title = "L2D Engine - " + (1.0f / e.Time).ToString("0.") + " fps.";
+            this.Title = "L2D Engine - " + (1.0f / e.Time).ToString("0.") + " fps - " + (e.Time * 1000).ToString("0.") + " ms.";
         }
 
 
