@@ -1,4 +1,6 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿#define RENDER_STATE_FIX
+
+using OpenTK.Graphics.OpenGL;
 
 namespace L2D
 {
@@ -23,6 +25,7 @@ namespace L2D
 
         public static bool BindVBO(BufferTarget target, int id)
         {
+#if RENDER_STATE_FIX
             if (id == CurrentVertexBuffer)
             {
                 return false;
@@ -33,6 +36,10 @@ namespace L2D
                 CurrentVertexBuffer = id;
                 return true;
             }
+#else
+            GL.BindBuffer(target, id);
+            return true;
+#endif
         }
     }
 }

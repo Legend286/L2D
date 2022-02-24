@@ -11,8 +11,8 @@ namespace L2D
     public class GameEngine : GameWindow
     {
         ImGuiController _imguicontroller;
-        static int SPRITES_X = 100;
-        static int SPRITES_Y = 100;
+        static int SPRITES_X = 150;
+        static int SPRITES_Y = 150;
         Sprite[,] sprites = new Sprite[SPRITES_X, SPRITES_Y];
         Camera camera;
 
@@ -65,7 +65,7 @@ namespace L2D
                 for (int j = 0; j < SPRITES_Y; j++)
                 {
                     {
-                        float size = (MathF.Abs(MathF.Sin(timer + (float)(i * j)) * 32f) + 32f);
+                        float size = (MathF.Abs(MathF.Sin(timer + (float)(i + j)) * 32f) + 32f);
                         sprites[i, j].SetRotation(45f);
 
                         sprites[i, j].Scale = size;
