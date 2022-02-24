@@ -2,10 +2,10 @@
 
 namespace L2D
 {
-    class Texture2D
+    public class Texture2D
     {
-        string filename = "";
-        int id = -1;
+        private string filename = "";
+        private int id = -1;
 
         public Texture2D(string filename)
         {

@@ -1,4 +1,7 @@
-﻿using System;
+﻿
+#define SHADER_STATE_FIX
+
+using System;
 using System.Collections.Generic;
 using OpenTK;
 
@@ -7,7 +10,8 @@ namespace L2D
     class ShaderManager
     {
         private static Dictionary<Tuple<ShaderFlags, ShaderTypeL2D>, Shader> Shaders = new Dictionary<Tuple<ShaderFlags, ShaderTypeL2D>, Shader>();
-        public static Shader currentShader;
+        public static Shader CurrentShader;
+        private static Shader CurrentActiveShader;
 
         public static int GetShaderCount() { return Shaders.Count; }
 
@@ -54,27 +58,40 @@ namespace L2D
 
         public static void SetCurrentShader(Shader shader)
         {
-            currentShader = shader;
+            CurrentShader = shader;
         }
 
         public static Shader GetCurrentShader()
         {
-            return currentShader;
+            return CurrentShader;
         }
 
         public static void UpdateCurrentShader()
         {
-            currentShader.BindMatrix4("viewprojection", CameraManager.GetCurrentCamera().GetViewAndProjectionMatrix());
+            CurrentShader.BindMatrix4("viewprojection", CameraManager.GetCurrentCamera().GetViewAndProjectionMatrix());
 
         }
 
         public static void BindModelMatrix(Matrix4 modelMatrix)
         {
-            currentShader.BindMatrix4("model", modelMatrix);
+            CurrentShader.BindMatrix4("model", modelMatrix);
         }
+
         public static void UseShader()
         {
-            currentShader.UseShader();
+#if SHADER_STATE_FIX // FIX Naive shader state system 
+            if (CurrentShader != CurrentActiveShader)
+            {
+                CurrentShader.UseShader();
+                CurrentActiveShader = CurrentShader;
+            }
+            else
+            {
+                return;
+            }
+#else
+            CurrentShader.UseShader();
+#endif
         }
     }
 }

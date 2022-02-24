@@ -11,8 +11,8 @@ namespace L2D
     public class GameEngine : GameWindow
     {
         ImGuiController _imguicontroller;
-        static int SPRITES_X = 25;
-        static int SPRITES_Y = 25;
+        static int SPRITES_X = 100;
+        static int SPRITES_Y = 100;
         Sprite[,] sprites = new Sprite[SPRITES_X, SPRITES_Y];
         Camera camera;
 
@@ -30,7 +30,7 @@ namespace L2D
             camera.OrthographicHeight = Height;
             camera.OrthographicWidth = Width;
         }
-
+        float scaleup = 1.0f;
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
@@ -55,6 +55,7 @@ namespace L2D
             // Render everything between here
             ImGui.Begin("test");
             ImGui.Text("Hello Aidan welcome to my little shit psyduck sprite test :)");
+            ImGui.SliderFloat("Spacing", ref scaleup, 0.5f, 100.0f);
             ImGui.End();
             timer += (float)e.Time;
 
@@ -65,9 +66,10 @@ namespace L2D
                         float size = (MathF.Abs(MathF.Sin(timer + (float)(i * j)) * 32f) + 32f);
                         sprites[i, j].SetRotation(45f);
 
-                        sprites[i, j].SizeX = size;
-                        sprites[i, j].SizeY = size;
+                        sprites[i, j].Scale = size;
                         sprites[i, j].Rotation = MathF.Sin( timer + (float)(i * j) ) * 45.0f + 180.0f;
+                        sprites[i, j].Position = new Vector2((i - SPRITES_X / 2) * 32.0f * scaleup, (j - SPRITES_Y / 2) * 32.0f * scaleup);
+
                         sprites[i, j].RenderStandard();
                     }
                 }
@@ -86,6 +88,7 @@ namespace L2D
             this.Title = "L2D Engine - " + (1.0f / e.Time).ToString("0.") + " fps.";
         }
 
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
@@ -97,7 +100,7 @@ namespace L2D
                 for (int j = 0; j < SPRITES_Y; j++)
                 {
                     {
-                        sprites[i, j] = new Sprite(128f, 128f, new Vector2((i - SPRITES_X/2) * 32f, (j - SPRITES_Y/2) * 32f), 0, 0, "test.png");
+                        sprites[i, j] = new Sprite(new Vector2((i - SPRITES_X / 2) * 32.0f, (j - SPRITES_Y / 2) * 32.0f), 0, 0.5f, 0, "test.png");
                     }
                 }
             camera = new Camera(Width, Height, 0.0f, 1000.0f);

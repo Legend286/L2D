@@ -68,7 +68,7 @@ namespace L2D
                 case CameraType.ORTHOGRAPHIC:
                     {
                         // 2d rendering, 0-100 depth range.
-                        Matrix4.CreateOrthographic(orthographicWidth, orthographicHeight, nearPlane, farPlane, out cameraProjectionMatrix);
+                        Matrix4.CreateOrthographic(orthographicWidth*2, orthographicHeight*2, nearPlane, farPlane, out cameraProjectionMatrix);
                         return;
                     }
                     case CameraType.PERSPECTIVE:
