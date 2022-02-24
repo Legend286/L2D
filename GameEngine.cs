@@ -11,8 +11,8 @@ namespace L2D
     public class GameEngine : GameWindow
     {
         ImGuiController _imguicontroller;
-        static int SPRITES_X = 100;
-        static int SPRITES_Y = 100;
+        static int SPRITES_X = 50;
+        static int SPRITES_Y = 50;
         Sprite[,] sprites = new Sprite[SPRITES_X, SPRITES_Y];
         Camera camera;
 
