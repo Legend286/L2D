@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using OpenTK;
+﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Graphics;
 using System;
@@ -40,6 +39,7 @@ namespace L2D
         {
             base.OnUpdateFrame(e);
 
+            Physics2DWorld.UpdatePhysicsWorld((float)e.Time);
             ShaderManager.UpdateCurrentShader();
         }
         float timer = 0;
@@ -55,7 +55,7 @@ namespace L2D
             // Render everything between here
             int count = SpriteRenderer.GetCount();
             ImGui.Begin("test");
-            ImGui.Text("Hello Aidan welcome to my little shit psyduck sprite test :)");
+            ImGui.Text("Hello Caz welcome to my little shit psyduck sprite test :)");
             ImGui.SliderFloat("Spacing", ref scaleup, 0.5f, 100.0f);
             ImGui.Text("Number of Sprites: " + count);
             ImGui.End();
@@ -107,8 +107,9 @@ namespace L2D
                 }
             camera = new Camera(Width, Height, 0.0f, 1000.0f);
             camera.Position = new Vector3(0, 0, 0);
-        }
 
+            Physics2DWorld.InitialiseWorld(new Vector2(0, -9.8f), new Vector2(-100f, -100f), new Vector2(100f, 100f));
+        }
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
             base.OnKeyPress(e);
