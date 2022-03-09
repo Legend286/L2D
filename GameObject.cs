@@ -24,6 +24,8 @@ namespace L2D
         public GameObject(Vector2 pos)
         {
             Position = pos;
+            Rotation = 0.0f;
+            Scale = 1.0f;
             InitialiseGameObjectUniqueID();
         }
 
@@ -36,6 +38,7 @@ namespace L2D
         {
             Position = pos;
             Rotation = rot;
+            Scale = 1.0f;
             InitialiseGameObjectUniqueID();
         }
 

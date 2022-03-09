@@ -3,14 +3,15 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Graphics;
 using System;
 using ImGuiNET;
-
+using Box2DX.Dynamics;
+using Box2DX.Collision;
 
 namespace L2D
 {
     public class GameEngine : GameWindow
     {
         ImGuiController _imguicontroller;
-        static int SPRITES_X = 50;
+        static int SPRITES_X = 100;
         static int SPRITES_Y = 50;
         Sprite[,] sprites = new Sprite[SPRITES_X, SPRITES_Y];
         Camera camera;
@@ -24,7 +25,7 @@ namespace L2D
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            GL.Viewport(0, 0, (int)Width, (int)Height);
+            GL.Viewport(0, 0, Width, Height);
             _imguicontroller.WindowResized(Width, Height);
             camera.OrthographicHeight = Height;
             camera.OrthographicWidth = Width;
@@ -55,9 +56,9 @@ namespace L2D
             // Render everything between here
             int count = SpriteRenderer.GetCount();
             ImGui.Begin("test");
-            ImGui.Text("Hello Caz welcome to my little shit psyduck sprite test :)");
+            ImGui.Text("Hello and welcome to my silly psyduck sprite test,\nFeaturing " + count + " psyduck sprites :)");
             ImGui.SliderFloat("Spacing", ref scaleup, 0.5f, 100.0f);
-            ImGui.Text("Number of Sprites: " + count);
+          //  ImGui.Text("Number of Sprites: " + count);
             ImGui.End();
             timer += (float)e.Time;
 
@@ -91,9 +92,11 @@ namespace L2D
         }
 
 
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            Physics2DWorld.InitialiseWorld(new Vector2(0, -9.8f), new Vector2(-100f, -100f), new Vector2(100f, 100f));
             _imguicontroller = new ImGuiController(Width, Height);
             _imguicontroller.CreateSkin();
             GL.ClearColor(Color4.CornflowerBlue);
@@ -102,13 +105,21 @@ namespace L2D
                 for (int j = 0; j < SPRITES_Y; j++)
                 {
                     {
-                        sprites[i, j] = new Sprite(new Vector2((i - SPRITES_X / 2) * 32.0f, (j - SPRITES_Y / 2) * 32.0f), 0, 0.5f, 0, "test.png");
+                        sprites[i, j] = new Sprite(new Vector2((i - SPRITES_X / 2) * 32.0f, (j - SPRITES_Y / 2) * 32.0f), 0, 50.0f, 0, "test.png");
+                      
                     }
                 }
+
+            BodyDef bd = new BodyDef();
+            bd.Angle = 1.0f;
+
+            Physics2DBody body = new Physics2DBody(bd);
+            Physics2DWorld.AddBodyToWorld(body);
+
             camera = new Camera(Width, Height, 0.0f, 1000.0f);
             camera.Position = new Vector3(0, 0, 0);
 
-            Physics2DWorld.InitialiseWorld(new Vector2(0, -9.8f), new Vector2(-100f, -100f), new Vector2(100f, 100f));
+       
         }
         protected override void OnKeyPress(KeyPressEventArgs e)
         {

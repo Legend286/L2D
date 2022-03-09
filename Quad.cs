@@ -36,13 +36,13 @@ namespace L2D
             vbo = GL.GenBuffer();
             vao = GL.GenVertexArray();
             imatrix = 0;
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+            RenderState.BindVBO(BufferTarget.ArrayBuffer, vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.StaticDraw);
-            GL.BindVertexArray(vao);
+            RenderState.BindVAO(vao);
             GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Float, false, 4 * sizeof(float), 0);
 
             GL.EnableVertexAttribArray(0);
-            GL.BindVertexArray(0);
+            RenderState.BindVAO(0);
         }
 
         public void CreateQuadWithInstancing()
@@ -51,15 +51,14 @@ namespace L2D
             vao = GL.GenVertexArray();
             imatrix = GL.GenBuffer();
 
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+            RenderState.BindVBO(BufferTarget.ArrayBuffer, vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.StaticDraw);
-            GL.BindVertexArray(vao);
+            RenderState.BindVAO(vao);
             GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Float, false, 4 * sizeof(float), 0);
-
-
             GL.EnableVertexAttribArray(0);
+
             RenderState.BindVAO(0);
+            RenderState.BindVBO(BufferTarget.ArrayBuffer, 0);
         }
 
         public void Draw()
@@ -104,7 +103,7 @@ namespace L2D
                 matrixCache[index] = spr.modelMatrix;
                 index += 1;
             }
-
+            
             UpdateInstancedArray(matrixCache);
 
             RenderState.BindVAO(vao);

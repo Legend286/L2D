@@ -10,8 +10,8 @@ namespace L2D
 
         public Physics2DBody(BodyDef body) : base()
         {
-            B2DBody = Physics2DWorld.AddBodyToWorld(this);
             B2DBodyDef = body;
+            B2DBody = Physics2DWorld.AddBodyToWorld(this);
         }
 
         public void Dispose()
